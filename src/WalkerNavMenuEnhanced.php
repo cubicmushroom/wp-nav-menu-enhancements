@@ -57,12 +57,20 @@ class WalkerNavMenuEnhanced extends \Walker_Nav_Menu {
 		! empty ( $item->url )
 		and $attributes .= ' href="' . esc_attr( $item->url ) . '"';
 
-		$attributes .= ' class="' . $this->get_link_classes($item, $depth, $args) . '"';
+		$attributes .= ' class="' . $this->get_link_classes( $item, $depth, $args ) . '"';
 
 		$attributes  = trim( $attributes );
 		$title       = apply_filters( 'the_title', $item->title, $item->ID );
-		$item_output = "$args->before<a $attributes>$args->link_before$title</a>"
-			. "$args->link_after$args->after";
+		$item_output =
+			sprintf(
+				"%s<a %s>%s%s%s</a>%s",
+				$args->before,
+				$attributes,
+				$this->get_link_before( $item, $depth, $args ),
+				$title,
+				$this->get_link_after( $item, $depth, $args ),
+				$args->after
+			);
 
 		// Since $output is called by reference we don't need to return anything.
 		$output .= apply_filters(
@@ -113,14 +121,48 @@ class WalkerNavMenuEnhanced extends \Walker_Nav_Menu {
 	 *
 	 * Not used in this class, but provided to allow overriding in child classes
 	 *
-	 * @param  object $item   Menu item data object.
-	 * @param  int    $depth  Depth of menu item. May be used for padding.
-	 * @param  array  $args   Additional strings.
+	 * @param  object $item  Menu item data object.
+	 * @param  int    $depth Depth of menu item. May be used for padding.
+	 * @param  array  $args  Additional strings.
 	 *
 	 * @return string
 	 */
 	protected function get_link_classes( $item, $depth, $args ) {
 
 		return '';
+	}
+
+
+	/**
+	 * Returns the HTML to insert immediately at the start of the link tag
+	 *
+	 * By default, will return the $args->link_before, but mainly here to allow overriding
+	 *
+	 * @param $item
+	 * @param $depth
+	 * @param $args
+	 *
+	 * @return string
+	 */
+	protected function get_link_before( $item, $depth, $args ) {
+
+		return $args->link_before;
+	}
+
+
+	/**
+	 * Returns the HTML to insert immediately at the end of the link tag
+	 *
+	 * By default, will return the $args->link_before, but mainly here to allow overriding
+	 *
+	 * @param $item
+	 * @param $depth
+	 * @param $args
+	 *
+	 * @return string
+	 */
+	protected function get_link_after( $item, $depth, $args ) {
+
+		return $args->link_after;
 	}
 }
