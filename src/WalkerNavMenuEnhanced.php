@@ -24,8 +24,6 @@ class WalkerNavMenuEnhanced extends \Walker_Nav_Menu {
 	 */
 	public function start_el( &$output, $item, $depth, $args ) {
 
-		global $wp_query;
-
 		// depth dependent classes
 		$depth_classes     = array(
 			( $depth == 0 ? 'main-menu-item' : 'sub-menu-item' ),
@@ -58,6 +56,8 @@ class WalkerNavMenuEnhanced extends \Walker_Nav_Menu {
 
 		! empty ( $item->url )
 		and $attributes .= ' href="' . esc_attr( $item->url ) . '"';
+
+		$attributes .= ' class="' . $this->get_link_classes($item, $depth, $args) . '"';
 
 		$attributes  = trim( $attributes );
 		$title       = apply_filters( 'the_title', $item->title, $item->ID );
@@ -105,5 +105,22 @@ class WalkerNavMenuEnhanced extends \Walker_Nav_Menu {
 	 */
 	public function end_lvl( &$output ) {
 		$output .= '</ul>';
+	}
+
+
+	/**
+	 * Returns the class names for the link tag
+	 *
+	 * Not used in this class, but provided to allow overriding in child classes
+	 *
+	 * @param  object $item   Menu item data object.
+	 * @param  int    $depth  Depth of menu item. May be used for padding.
+	 * @param  array  $args   Additional strings.
+	 *
+	 * @return string
+	 */
+	protected function get_link_classes( $item, $depth, $args ) {
+
+		return '';
 	}
 }
